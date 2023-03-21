@@ -1,28 +1,22 @@
 /* eslint-disable no-duplicate-case */
 import React, { useEffect, useState } from "react";
-import { taskCompleted, taskRemove, titleUpdated } from "./store/actions";
+import {
+  completedTask,
+  getTasks,
+  taskDelete,
+  titleUpdated,
+} from "./store/task";
 import store from "./store/store";
 
 const StorePage = () => {
   const [state, setState] = useState(store.getState());
 
   useEffect(() => {
+    store.dispatch(getTasks());
     store.subscribe(() => {
       setState(store.getState());
     });
   }, []);
-
-  const handleClick = (id) => {
-    store.dispatch(taskCompleted(id));
-  };
-
-  const handleChange = (id) => {
-    store.dispatch(titleUpdated(id));
-  };
-
-  const handleDelete = (id) => {
-    store.dispatch(taskRemove(id));
-  };
 
   return (
     <>
@@ -30,27 +24,30 @@ const StorePage = () => {
       <ul>
         {state !== undefined &&
           state.map((el) => (
-            <div className="d-flex justify-content-between align-items-center">
+            <div
+              key={el.id}
+              className="d-flex justify-content-between align-items-center"
+            >
               <div className="mb-3">
-                <li key={el.id}>{el.desc}</li>
+                <li>{el.title}</li>
                 <p>Completed: {el.copmleted ? "Done" : "In process"}</p>
               </div>
               <div>
                 <button
                   className="btn btn-success mx-2"
-                  onClick={() => handleClick(el.id)}
+                  onClick={() => store.dispatch(completedTask(el.id))}
                 >
                   Toogle
                 </button>
                 <button
                   className="btn btn-primary mx-2"
-                  onClick={() => handleChange(el.id)}
+                  onClick={() => store.dispatch(titleUpdated(el.id))}
                 >
                   Title
                 </button>
                 <button
                   className="btn btn-danger"
-                  onClick={() => handleDelete(el.id)}
+                  onClick={() => store.dispatch(taskDelete(el.id))}
                 >
                   Remove
                 </button>
