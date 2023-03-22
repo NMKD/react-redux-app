@@ -1,9 +1,14 @@
-import { configureStore } from "@reduxjs/toolkit";
-
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import errorsReducer from "./errors";
 import taskReducer from "./task";
 
+const rootReducer = combineReducers({
+  error: errorsReducer,
+  tasks: taskReducer,
+});
+
 const store = configureStore({
-  reducer: taskReducer,
+  reducer: rootReducer,
 });
 
 export default store;

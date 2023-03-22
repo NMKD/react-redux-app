@@ -3,23 +3,26 @@ import React, { useEffect } from "react";
 import {
   completedTask,
   getTasks,
+  loadingTasks,
   taskDelete,
   titleUpdated,
 } from "./store/task";
 import { useSelector, useDispatch } from "react-redux";
+import { getErrors } from "./store/errors";
 
 const StorePage = () => {
-  const state = useSelector((state) => state);
+  const state = useSelector(getTasks());
+  const error = useSelector(getErrors());
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getTasks());
+    dispatch(loadingTasks());
   }, [dispatch]);
 
   return (
     <>
       <h2>Store</h2>
-
+      {error.length > 0 && <h4>{error[0].error}</h4>}
       {!state.isLoading &&
         state.entities.map((el) => (
           <div

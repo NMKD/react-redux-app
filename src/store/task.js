@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import todosService from "../service/todos.service";
+import { setError } from "./errors";
 
-const initialState = { entities: [], isLoading: true, error: null };
+const initialState = { entities: [], isLoading: true };
 
 const taskSlice = createSlice({
   name: "task",
@@ -29,27 +30,25 @@ const taskSlice = createSlice({
       state.entities = payload;
       state.isLoading = false;
     },
-    error(state, { payload }) {
-      state.error = payload;
-    },
   },
 });
 
-const { remove, update, recived, change, error } = taskSlice.actions;
+const { remove, update, recived, change } = taskSlice.actions;
 const { reducer: taskReducer } = taskSlice;
 
 export const completedTask = (id) => (dispatch, getState) => {
   dispatch(update({ id }));
 };
 
-export const getTasks = () => async (dispatch) => {
-  dispatch(error(null));
+export const loadingTasks = () => async (dispatch) => {
   try {
     const { data } = await todosService.get();
     dispatch(recived(data));
   } catch (e) {
     dispatch(
-      error("Ошибка загрузки данных с сревера jsonplaceholder.typicode.com")
+      setError(
+        "Ошибка при загрузки данных с сревера jsonplaceholder.typicode.com"
+      )
     );
     console.error(e);
   }
@@ -61,5 +60,7 @@ export function titleUpdated(id) {
 
 export const taskDelete = (id) => (dispatch, getState) =>
   dispatch(remove({ id }));
+
+export const getTasks = () => (state) => state.tasks;
 
 export default taskReducer;
