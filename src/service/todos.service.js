@@ -10,6 +10,7 @@ const todosService = {
         _limit: 5,
       },
     }),
+  create: async (payload) => await httpService.post(endPoint, payload),
 };
 
 export default todosService;
